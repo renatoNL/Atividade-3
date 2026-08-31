@@ -1,0 +1,17 @@
+com\ingressos\exception\GlobalExceptionHandler.class
+com\ingressos\exception\LimiteRequisicaoExcedidoException.class
+com\ingressos\service\EventoService.class
+com\ingressos\model\Evento.class
+com\ingressos\repository\IngressoRepository.class
+com\ingressos\controller\CompradorController.class
+com\ingressos\config\RateLimitInterceptor.class
+com\ingressos\exception\RegraNegocioException.class
+com\ingressos\repository\EventoRepository.class
+com\ingressos\IngressosApplication.class
+com\ingressos\util\DataLoader.class
+com\ingressos\service\IngressoService.class
+com\ingressos\model\IngressoComprado.class
+com\ingressos\config\RateLimitInterceptor$RequisicaoInfo.class
+com\ingressos\controller\AdministradorController.class
+com\ingressos\config\WebConfig.class
+com\ingressos\exception\RecursoNaoEncontradoException.class
