@@ -1,34 +1,30 @@
-export const API_URL = 'http://localhost:8081';
+import axios from 'axios';
 
-export const criarEventoAPI = async (evento) => {
-    const res = await fetch(`${API_URL}/admin/eventos`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(evento)
-    });
-    if (!res.ok) throw await res.json();
-    return res.json();
-};
+const api = axios.create({
+  baseURL: 'http://localhost:8080/api',
+  timeout: 10000,
+});
 
-export const comprarIngressoAPI = async (eventoId, compradorId) => {
-    const res = await fetch(`${API_URL}/comprador/ingressos/comprar?eventoId=${eventoId}&compradorId=${compradorId}`, { method: 'POST' });
-    if (!res.ok) throw await res.json();
-    return res.json();
-};
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (!error.response) {
+      window.location.href = '/erro?tipo=network';
+    } else if (error.response.status === 429) {
+      window.location.href = '/erro?tipo=rate_limit';
+    } else if (error.response.status >= 500) {
+      window.location.href = '/erro?tipo=fatal';
+    }
+    return Promise.reject(error);
+  }
+);
 
-export const listarEventosAPI = async () => {
-    const res = await fetch(`${API_URL}/admin/eventos`);
-    if (!res.ok) throw await res.json();
-    return res.json();
-};
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
-export const listarMeusIngressosAPI = async (compradorId) => {
-    const res = await fetch(`${API_URL}/comprador/ingressos/${compradorId}`);
-    if (!res.ok) throw await res.json();
-    return res.json();
-};
-
-export const cancelarIngressoAPI = async (ingressoId) => {
-    const res = await fetch(`${API_URL}/comprador/ingressos/${ingressoId}/cancelar`, { method: 'POST' });
-    if (!res.ok) throw await res.json();
-};
+export default api;

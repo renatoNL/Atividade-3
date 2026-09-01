@@ -1,62 +1,44 @@
 package com.ingressos.model;
 
-import java.math.BigDecimal;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "eventos")
 public class Evento {
-    private String id;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(name = "vendedor_id")
+    private Long vendedorId;
+    private String titulo;
     private String descricao;
-    private String tipo;
-    private BigDecimal preco;
-    private AtomicInteger ingressosDisponiveis;
+    @Column(name = "tipo_evento")
+    private String tipoEvento;
+    @Column(name = "data_evento")
+    private LocalDateTime dataEvento;
 
-    public Evento() {}
-
-    public Evento(String descricao, String tipo, BigDecimal preco, int ingressosDisponiveis) {
-        this.id = UUID.randomUUID().toString();
-        this.descricao = descricao;
-        this.tipo = tipo;
-        this.preco = preco;
-        this.ingressosDisponiveis = new AtomicInteger(ingressosDisponiveis);
+    public Evento() {
     }
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public Evento(Long vendedorId, String titulo, String descricao, String tipoEvento, LocalDateTime dataEvento) {
+        this.vendedorId = vendedorId;
+        this.titulo = titulo;
+        this.descricao = descricao;
+        this.tipoEvento = tipoEvento;
+        this.dataEvento = dataEvento;
+    }
 
+    // Getters e Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public Long getVendedorId() { return vendedorId; }
+    public void setVendedorId(Long vendedorId) { this.vendedorId = vendedorId; }
+    public String getTitulo() { return titulo; }
+    public void setTitulo(String titulo) { this.titulo = titulo; }
     public String getDescricao() { return descricao; }
     public void setDescricao(String descricao) { this.descricao = descricao; }
-
-    public String getTipo() { return tipo; }
-    public void setTipo(String tipo) { this.tipo = tipo; }
-
-    public BigDecimal getPreco() { return preco; }
-    public void setPreco(BigDecimal preco) { this.preco = preco; }
-
-    public int getIngressosDisponiveis() { 
-        return ingressosDisponiveis != null ? ingressosDisponiveis.get() : 0; 
-    }
-    
-    public void setIngressosDisponiveis(int ingressosDisponiveis) { 
-        if (this.ingressosDisponiveis == null) {
-            this.ingressosDisponiveis = new AtomicInteger(ingressosDisponiveis);
-        } else {
-            this.ingressosDisponiveis.set(ingressosDisponiveis); 
-        }
-    }
-
-    public boolean decrementarIngresso() {
-        if (this.ingressosDisponiveis == null) return false;
-        while (true) {
-            int atual = ingressosDisponiveis.get();
-            if (atual <= 0) return false;
-            if (ingressosDisponiveis.compareAndSet(atual, atual - 1)) return true;
-        }
-    }
-
-    public void incrementarIngresso() {
-        if (this.ingressosDisponiveis != null) {
-            this.ingressosDisponiveis.incrementAndGet();
-        }
-    }
+    public String getTipoEvento() { return tipoEvento; }
+    public void setTipoEvento(String tipoEvento) { this.tipoEvento = tipoEvento; }
+    public LocalDateTime getDataEvento() { return dataEvento; }
+    public void setDataEvento(LocalDateTime dataEvento) { this.dataEvento = dataEvento; }
 }

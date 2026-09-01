@@ -1,3 +1,4 @@
+// src/main/java/com/ingressos/service/IngressoService.java
 package com.ingressos.service;
 
 import com.ingressos.exception.RecursoNaoEncontradoException;
@@ -20,24 +21,23 @@ public class IngressoService {
         this.ingressoRepository = ingressoRepository;
     }
 
-    public IngressoComprado comprarIngresso(String eventoId, String compradorId) {
+    public IngressoComprado comprarIngresso(Long eventoId, Long compradorId) {
         Evento evento = eventoRepository.findById(eventoId)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Evento não encontrado."));
 
-        if (!evento.decrementarIngresso()) {
-            throw new RegraNegocioException("Ingressos esgotados para este evento.");
-        }
-        eventoRepository.save(evento);
+        IngressoComprado ingresso = new IngressoComprado();
+        ingresso.setEventoId(evento.getId());
+        ingresso.setCompradorId(compradorId);
+        ingresso.setStatus("ATIVO");
 
-        IngressoComprado ingresso = new IngressoComprado(eventoId, compradorId);
         return ingressoRepository.save(ingresso);
     }
 
-    public List<IngressoComprado> listarMeusIngressos(String compradorId) {
+    public List<IngressoComprado> listarMeusIngressos(Long compradorId) {
         return ingressoRepository.findByCompradorId(compradorId);
     }
 
-    public void cancelarCompra(String ingressoId) {
+    public void cancelarCompra(Long ingressoId) {
         IngressoComprado ingresso = ingressoRepository.findById(ingressoId)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Ingresso não encontrado."));
 
@@ -47,11 +47,5 @@ public class IngressoService {
 
         ingresso.setStatus("CANCELADO");
         ingressoRepository.save(ingresso);
-
-        Evento evento = eventoRepository.findById(ingresso.getEventoId()).orElse(null);
-        if (evento != null) {
-            evento.incrementarIngresso();
-            eventoRepository.save(evento);
-        }
     }
 }

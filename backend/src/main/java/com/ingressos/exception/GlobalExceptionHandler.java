@@ -1,4 +1,4 @@
-package com.ingresseai.exception;
+package com.ingressos.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,5 +29,26 @@ public class GlobalExceptionHandler {
         Map<String, String> error = new HashMap<>();
         error.put("erro", "Erro interno no servidor ou falha de conexão. Tente novamente.");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+
+    @ExceptionHandler(RegraNegocioException.class)
+    public ResponseEntity<Map<String, String>> handleRegraNegocio(RegraNegocioException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("erro", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(RecursoNaoEncontradoException.class)
+    public ResponseEntity<Map<String, String>> handleNotFound(RecursoNaoEncontradoException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("erro", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(LimiteRequisicaoExcedidoException.class)
+    public ResponseEntity<Map<String, String>> handleRateLimit(LimiteRequisicaoExcedidoException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("erro", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(error);
     }
 }

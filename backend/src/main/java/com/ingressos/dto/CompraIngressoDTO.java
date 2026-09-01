@@ -1,4 +1,4 @@
-package com.ingresseai.dto;
+package com.ingressos.dto;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

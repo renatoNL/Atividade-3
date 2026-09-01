@@ -2,7 +2,7 @@
   --bg-color: #121212;
   --panel-bg: #1e1e1e;
   --text-color: #e0e0e0;
-  --accent-color: #8e24aa; /* Roxo */
+  --accent-color: #8e24aa;
   --danger-color: #f44336;
   --border-color: #333;
 }
@@ -11,7 +11,7 @@ body.light-mode {
   --bg-color: #f5f5f5;
   --panel-bg: #ffffff;
   --text-color: #212121;
-  --accent-color: #6a1b9a; /* Roxo Escuro para Light Mode */
+  --accent-color: #6a1b9a;
   --danger-color: #d32f2f;
   --border-color: #ccc;
 }
@@ -38,6 +38,7 @@ body {
   color: var(--accent-color);
   font-weight: 900;
   letter-spacing: -1px;
+  margin: 0;
 }
 
 .nav-actions {
@@ -110,14 +111,20 @@ body {
   border-color: var(--accent-color);
 }
 
-.input-field.error {
-  border-color: var(--danger-color);
+.input-field.error,
+.input-error,
+.input-erro {
+  border-color: var(--danger-color) !important;
+  outline: none;
 }
 
-.error-text {
+.error-text,
+.error-msg,
+.mensagem-erro {
   color: var(--danger-color);
-  font-size: 0.8rem;
-  margin: 0;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
 }
 
 .checkbox-group {
@@ -166,31 +173,12 @@ body {
   margin-top: 1rem;
 }
 
-input[type='number']::-webkit-inner-spin-button,
-input[type='number']::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-input[type='number'] {
-  -moz-appearance: textfield;
-}
-
-.input-erro {
-  border: 2px solid red !important;
-  outline: none;
-}
-
-.mensagem-erro {
-  color: red;
-  font-size: 12px;
-  display: block;
-}
-
 .card-evento {
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   padding: 16px;
   position: relative;
+  background-color: var(--panel-bg);
+  border-radius: 8px;
 }
 
 .flag-tipo-evento {
@@ -202,4 +190,15 @@ input[type='number'] {
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 12px;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
 }

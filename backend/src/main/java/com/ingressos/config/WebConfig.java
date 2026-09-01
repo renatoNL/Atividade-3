@@ -7,7 +7,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-
     private final RateLimitInterceptor rateLimitInterceptor;
 
     public WebConfig(RateLimitInterceptor rateLimitInterceptor) {
@@ -16,7 +15,16 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(rateLimitInterceptor).addPathPatterns("/**");
+        registry.addInterceptor(rateLimitInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns(
+                        "/v3/api-docs",
+                        "/v3/api-docs/**", 
+                        "/swagger-ui/**", 
+                        "/swagger-ui.html", 
+                        "/docs",
+                        "/error"
+                );
     }
 
     @Override

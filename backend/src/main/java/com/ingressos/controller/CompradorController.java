@@ -10,7 +10,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/comprador/ingressos")
 public class CompradorController {
-
     private final IngressoService ingressoService;
 
     public CompradorController(IngressoService ingressoService) {
@@ -19,17 +18,17 @@ public class CompradorController {
 
     @PostMapping("/comprar")
     @ResponseStatus(HttpStatus.CREATED)
-    public IngressoComprado comprarIngresso(@RequestParam String eventoId, @RequestParam String compradorId) {
+    public IngressoComprado comprarIngresso(@RequestParam Long eventoId, @RequestParam Long compradorId) {
         return ingressoService.comprarIngresso(eventoId, compradorId);
     }
 
     @GetMapping("/{compradorId}")
-    public List<IngressoComprado> listarMeusIngressos(@PathVariable String compradorId) {
+    public List<IngressoComprado> listarMeusIngressos(@PathVariable Long compradorId) {
         return ingressoService.listarMeusIngressos(compradorId);
     }
 
     @PostMapping("/{ingressoId}/cancelar")
-    public void cancelarCompra(@PathVariable String ingressoId) {
+    public void cancelarCompra(@PathVariable Long ingressoId) {
         ingressoService.cancelarCompra(ingressoId);
     }
 }

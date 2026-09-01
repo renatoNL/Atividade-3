@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Component
 public class DataLoader implements CommandLineRunner {
@@ -16,13 +16,18 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        for (int i = 1; i <= 10000; i++) {
+        if (eventoRepository.count() > 0) {
+            return;
+        }
+
+        for (int i = 1; i <= 10; i++) {
             String tipo = (i % 2 == 0) ? "FUTEBOL" : "SHOW";
             Evento evento = new Evento(
+                    1L,
                     "Evento " + i,
+                    "Descrição do evento " + i + ".",
                     tipo,
-                    new BigDecimal("150.00"),
-                    500
+                    LocalDateTime.now().plusDays(i)
             );
             eventoRepository.save(evento);
         }
