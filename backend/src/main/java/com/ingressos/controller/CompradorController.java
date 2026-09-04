@@ -1,10 +1,13 @@
 package com.ingressos.controller;
 
+import com.ingressos.dto.CompraIngressoDTO;
 import com.ingressos.model.IngressoComprado;
 import com.ingressos.service.IngressoService;
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -16,19 +19,20 @@ public class CompradorController {
         this.ingressoService = ingressoService;
     }
 
+    private Long getUsuarioAutenticadoId() {
+        return Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
+    }
+
     @PostMapping("/comprar")
     @ResponseStatus(HttpStatus.CREATED)
-    public IngressoComprado comprarIngresso(@RequestParam Long eventoId, @RequestParam Long compradorId) {
-        return ingressoService.comprarIngresso(eventoId, compradorId);
+    @Operation(summary = "Comprar ingresso usando DTO de forma segura")
+    public IngressoComprado comprarIngresso(@RequestBody @Valid CompraIngressoDTO dto) {
+        return ingressoService.comprarIngresso(dto.ingressoId(), dto.quantidade(), getUsuarioAutenticadoId());
     }
 
-    @GetMapping("/{compradorId}")
-    public List<IngressoComprado> listarMeusIngressos(@PathVariable Long compradorId) {
-        return ingressoService.listarMeusIngressos(compradorId);
-    }
-
-    @PostMapping("/{ingressoId}/cancelar")
-    public void cancelarCompra(@PathVariable Long ingressoId) {
-        ingressoService.cancelarCompra(ingressoId);
+    @GetMapping
+    @Operation(summary = "Listar ingressos do usuário logado")
+    public List<IngressoComprado> listarMeusIngressos() {
+        return ingressoService.listarMeusIngressos(getUsuarioAutenticadoId());
     }
 }

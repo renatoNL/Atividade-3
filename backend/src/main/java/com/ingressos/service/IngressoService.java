@@ -1,51 +1,62 @@
-// src/main/java/com/ingressos/service/IngressoService.java
 package com.ingressos.service;
 
 import com.ingressos.exception.RecursoNaoEncontradoException;
 import com.ingressos.exception.RegraNegocioException;
-import com.ingressos.model.Evento;
+import com.ingressos.model.Ingresso;
 import com.ingressos.model.IngressoComprado;
-import com.ingressos.repository.EventoRepository;
 import com.ingressos.repository.IngressoRepository;
+import com.ingressos.repository.IngressoCompradoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 public class IngressoService {
-    private final EventoRepository eventoRepository;
-    private final IngressoRepository ingressoRepository;
 
-    public IngressoService(EventoRepository eventoRepository, IngressoRepository ingressoRepository) {
-        this.eventoRepository = eventoRepository;
+    private final IngressoRepository ingressoRepository;
+    private final IngressoCompradoRepository ingressoCompradoRepository;
+
+    public IngressoService(IngressoRepository ingressoRepository, IngressoCompradoRepository ingressoCompradoRepository) {
         this.ingressoRepository = ingressoRepository;
+        this.ingressoCompradoRepository = ingressoCompradoRepository;
     }
 
-    public IngressoComprado comprarIngresso(Long eventoId, Long compradorId) {
-        Evento evento = eventoRepository.findById(eventoId)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Evento não encontrado."));
+    @Transactional
+    public IngressoComprado comprarIngresso(Long ingressoId, Integer quantidade, Long compradorId) {
+        Ingresso ingresso = ingressoRepository.findById(ingressoId)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Ingresso não encontrado."));
 
-        IngressoComprado ingresso = new IngressoComprado();
-        ingresso.setEventoId(evento.getId());
-        ingresso.setCompradorId(compradorId);
-        ingresso.setStatus("ATIVO");
+        if (ingresso.getQuantidade() < quantidade) {
+            throw new RegraNegocioException("Quantidade de ingressos insuficiente.");
+        }
 
-        return ingressoRepository.save(ingresso);
+        ingresso.setQuantidade(ingresso.getQuantidade() - quantidade);
+        ingressoRepository.save(ingresso);
+
+        IngressoComprado compra = new IngressoComprado();
+        compra.setIngressoId(ingressoId);
+        compra.setCompradorId(compradorId);
+        compra.setQuantidadeComprada(quantidade);
+
+        return ingressoCompradoRepository.save(compra);
     }
 
     public List<IngressoComprado> listarMeusIngressos(Long compradorId) {
-        return ingressoRepository.findByCompradorId(compradorId);
+        return ingressoCompradoRepository.findByCompradorId(compradorId);
     }
 
-    public void cancelarCompra(Long ingressoId) {
-        IngressoComprado ingresso = ingressoRepository.findById(ingressoId)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Ingresso não encontrado."));
+    @Transactional
+    public void cancelarCompra(Long compraId) {
+        IngressoComprado compra = ingressoCompradoRepository.findById(compraId)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Compra não encontrada."));
 
-        if ("CANCELADO".equals(ingresso.getStatus())) {
-            throw new RegraNegocioException("Este ingresso já encontra-se cancelado.");
-        }
+        Ingresso ingresso = ingressoRepository.findById(compra.getIngressoId())
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Ingresso vinculado não encontrado."));
 
-        ingresso.setStatus("CANCELADO");
+        ingresso.setQuantidade(ingresso.getQuantidade() + compra.getQuantidadeComprada());
         ingressoRepository.save(ingresso);
+        
+        ingressoCompradoRepository.delete(compra);
     }
 }

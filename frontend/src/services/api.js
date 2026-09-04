@@ -1,23 +1,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api',
-  timeout: 10000,
+  baseURL: 'http://localhost:8080', 
 });
-
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (!error.response) {
-      window.location.href = '/erro?tipo=network';
-    } else if (error.response.status === 429) {
-      window.location.href = '/erro?tipo=rate_limit';
-    } else if (error.response.status >= 500) {
-      window.location.href = '/erro?tipo=fatal';
-    }
-    return Promise.reject(error);
-  }
-);
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
@@ -26,5 +11,10 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+export const criarEventoAPI = (dados) => api.post('/eventos', dados);
+export const listarEventosAPI = () => api.get('/eventos');
+export const comprarIngressoAPI = (id, dados) => api.post(`/eventos/${id}/comprar`, dados);
+export const listarMeusIngressosAPI = () => api.get('/comprador/meus-ingressos');
 
 export default api;
