@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "eventos")
 public class Evento {
+    
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -23,6 +24,8 @@ public class Evento {
 
     @Column(name = "criado_em", insertable = false, updatable = false)
     private LocalDateTime criadoEm;
+
+    public Evento() {}
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

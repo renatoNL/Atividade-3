@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class RateLimitInterceptor implements HandlerInterceptor {
 
     private final ConcurrentHashMap<String, RequisicaoInfo> controleRequisicoes = new ConcurrentHashMap<>();
-    private static final int LIMITE_REQUISICOES = 10;
+    private static final int LIMITE_REQUISICOES = 5;
     private static final long TEMPO_JANELA_MS = 1000;
 
     @Override
