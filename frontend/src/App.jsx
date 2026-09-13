@@ -1,50 +1,52 @@
 import React, { useState } from 'react';
-import Navbar from './components/Navbar';
-import RoleSelection from './components/RoleSelection';
-import LoginForm from './components/LoginForm';
-import RegisterForm from './components/RegisterForm';
-import AdminPanel from './components/AdminPanel';
-import Marketplace from './components/Marketplace';
-import Cart from './components/Cart';
+import Navbar from './components/layout/Navbar';
+import RoleSelection from './components/auth/RoleSelection';
+import LoginForm from './components/auth/LoginForm';
+import RegisterForm from './components/auth/RegisterForm';
+import AdminPanel from './components/marketplace/AdminPanel';
+import Marketplace from './components/marketplace/Marketplace';
+import Cart from './components/marketplace/Cart';
 
 function App() {
-  const [view, setView] = useState('roleSelection');
+  const [view, setView] = useState('role-selection');
+  const [role, setRole] = useState(null);
   const [user, setUser] = useState(null);
+  const [cart, setCart] = useState([]);
   const [cartCount, setCartCount] = useState(0);
 
   const handleLogout = () => {
     setUser(null);
-    setView('roleSelection');
+    setView('role-selection');
     localStorage.removeItem('token');
   };
 
   const renderView = () => {
     switch (view) {
-      case 'roleSelection':
-        return <RoleSelection setView={setView} />;
+      case 'role-selection':
+        return <RoleSelection setRole={setRole} setView={setView} />;
       case 'login':
-        return <LoginForm setView={setView} setUser={setUser} />;
+        return <LoginForm role={role} setView={setView} onLogin={setUser} />;
       case 'register':
-        return <RegisterForm setView={setView} />;
+        return <RegisterForm role={role} setView={setView} />;
       case 'admin':
         return <AdminPanel />;
       case 'marketplace':
-        return <Marketplace />;
+        return <Marketplace cart={cart} setCart={setCart} />;
       case 'cart':
-        return <Cart />;
+        return <Cart cart={cart} setCart={setCart} user={user} setView={setView} />;
       default:
-        return <RoleSelection setView={setView} />;
+        return <RoleSelection setRole={setRole} setView={setView} />;
     }
   };
 
   return (
     <div>
-      <Navbar 
+      <Navbar
         view={view} 
         setView={setView} 
         user={user} 
         onLogout={handleLogout} 
-        cartCount={cartCount} 
+        cartCount={cart.length}
       />
       <main>
         {renderView()}

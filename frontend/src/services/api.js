@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080', 
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8081',
 });
 
 api.interceptors.request.use((config) => {
@@ -14,7 +14,7 @@ api.interceptors.request.use((config) => {
 
 export const criarEventoAPI = (dados) => api.post('/eventos', dados);
 export const listarEventosAPI = () => api.get('/eventos');
-export const comprarIngressoAPI = (id, dados) => api.post(`/eventos/${id}/comprar`, dados);
-export const listarMeusIngressosAPI = () => api.get('/comprador/meus-ingressos');
+export const comprarIngressoAPI = (dados) => api.post('/comprador/ingressos/comprar', dados);
+export const listarMeusIngressosAPI = () => api.get('/comprador/ingressos');
 
 export default api;
