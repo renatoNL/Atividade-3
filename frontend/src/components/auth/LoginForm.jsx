@@ -1,22 +1,15 @@
 import { useState } from 'react';
 import { validaCPF, validaCNPJ } from '../../utils/validators';
+import { autenticarAPI } from '../../services/api';
 
 export default function LoginForm({ role, setView, onLogin }) {
     const [documento, setDocumento] = useState('');
     const [senha, setSenha] = useState('');
     const [erro, setErro] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setErro('');
-
-        // Mock para Usuário Master (Acesso facilitado para demonstração da atividade)
-        if (role === 'COMPRADOR' && documento === '00000000000' && senha === 'MasterA1') {
-            return onLogin({ id: 'MASTER_COMP', documento, role, nome: 'Usuário Comprador Master' });
-        }
-        if (role === 'VENDEDOR' && documento === '00000000000000' && senha === 'MasterA1') {
-            return onLogin({ id: 'MASTER_VEND', documento, role, nome: 'Usuário Vendedor Master' });
-        }
 
         if (role === 'COMPRADOR' && !validaCPF(documento)) {
             return setErro('CPF inválido.');
@@ -28,7 +21,14 @@ export default function LoginForm({ role, setView, onLogin }) {
             return setErro('A senha deve ter no mínimo 6 caracteres.');
         }
 
-        onLogin({ id: 'USR_' + Date.now(), documento, role });
+        try {
+            const { token } = await autenticarAPI({ cpfCnpj: documento, senha });
+            localStorage.setItem('token', token);
+            onLogin({ role, documento });
+            setView(role === 'VENDEDOR' ? 'admin' : 'marketplace');
+        } catch (error) {
+            setErro(error.response?.data?.mensagem || 'Não foi possível entrar.');
+        }
     };
 
     return (

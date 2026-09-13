@@ -11,7 +11,7 @@ export default function Marketplace({ cart, setCart }) {
 
     const handleAddToCart = (evento) => {
         const qtd = parseInt(quantidades[evento.id] || 1);
-        if (qtd <= 0 || qtd > evento.ingressosDisponiveis) return alert('Quantidade selecionada indisponível.');
+        if (qtd <= 0 || qtd > evento.quantidadeDisponivel) return alert('Quantidade selecionada indisponível.');
 
         const existingItem = cart.find(item => item.evento.id === evento.id);
         if (existingItem) {
@@ -28,18 +28,19 @@ export default function Marketplace({ cart, setCart }) {
             <div className="grid-container" style={{ marginTop: '2rem' }}>
                 {eventos.map(ev => (
                     <div key={ev.id} className="card">
-                        <h3 style={{ margin: 0, color: 'var(--accent-color)' }}>{ev.descricao}</h3>
-                        <p style={{ margin: '0.5rem 0' }}><strong>Categoria:</strong> {ev.tipo}</p>
-                        <p style={{ margin: '0.5rem 0', fontSize: '1.2rem' }}><strong>R$ {ev.preco.toFixed(2)}</strong></p>
-                        <p style={{ margin: '0.5rem 0', fontSize: '0.9rem', color: ev.ingressosDisponiveis > 10 ? 'var(--accent-color)' : 'var(--danger-color)' }}>
-                            Disponíveis: {ev.ingressosDisponiveis}
+                            <h3 style={{ margin: 0, color: 'var(--accent-color)' }}>{ev.titulo}</h3>
+                        <p style={{ margin: '0.5rem 0' }}>{ev.descricao}</p>
+                        <p style={{ margin: '0.5rem 0' }}><strong>Categoria:</strong> {ev.tipoEvento}</p>
+                        <p style={{ margin: '0.5rem 0', fontSize: '1.2rem' }}><strong>R$ {ev.valorIngresso.toFixed(2)}</strong></p>
+                        <p style={{ margin: '0.5rem 0', fontSize: '0.9rem', color: ev.quantidadeDisponivel > 10 ? 'var(--accent-color)' : 'var(--danger-color)' }}>
+                            Disponíveis: {ev.quantidadeDisponivel}
                         </p>
                         <div className="card-actions">
                             <input 
                                 className="input-field" 
                                 type="number" 
                                 min="1" 
-                                max={ev.ingressosDisponiveis}
+                                max={ev.quantidadeDisponivel}
                                 value={quantidades[ev.id] || 1} 
                                 onChange={(e) => setQuantidades({...quantidades, [ev.id]: e.target.value})}
                                 style={{ width: '80px', padding: '0.5rem' }}

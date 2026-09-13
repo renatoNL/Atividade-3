@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { validaCPF, validaCNPJ, validaIdade, validaSenha, validaEmail } from '../../utils/validators';
+import { cadastrarAPI } from '../../services/api';
 
 export default function RegisterForm({ role, setView }) {
     const [form, setForm] = useState({
@@ -32,7 +33,7 @@ export default function RegisterForm({ role, setView }) {
         if (erro) setErros(prev => ({ ...prev, [field]: erro }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         
         // Validar tudo antes do envio
@@ -46,8 +47,13 @@ export default function RegisterForm({ role, setView }) {
             return;
         }
 
-        alert('Cadastro realizado com sucesso! Faça login para continuar.');
-        setView('login');
+        try {
+            await cadastrarAPI({ nomeCompleto: form.nome, cpfCnpj: form.documento, senha: form.senha, tipo: role });
+            alert('Cadastro realizado com sucesso! Faça login para continuar.');
+            setView('login');
+        } catch (error) {
+            alert(error.response?.data?.mensagem || 'Não foi possível realizar o cadastro.');
+        }
     };
 
     return (

@@ -6,6 +6,7 @@ import RegisterForm from './components/auth/RegisterForm';
 import AdminPanel from './components/marketplace/AdminPanel';
 import Marketplace from './components/marketplace/Marketplace';
 import Cart from './components/marketplace/Cart';
+import ChatPanel from './components/chat/ChatPanel';
 
 function App() {
   const [view, setView] = useState('role-selection');
@@ -50,6 +51,7 @@ function App() {
       />
       <main>
         {renderView()}
+        {user && <ChatPanel />}
       </main>
     </div>
   );

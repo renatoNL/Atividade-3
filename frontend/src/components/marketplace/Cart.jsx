@@ -1,14 +1,14 @@
 import { comprarIngressoAPI } from '../../services/api';
 
 export default function Cart({ cart, setCart, user, setView }) {
-    const total = cart.reduce((acc, item) => acc + (item.evento.preco * item.quantidade), 0);
+    const total = cart.reduce((acc, item) => acc + (item.evento.valorIngresso * item.quantidade), 0);
 
     const handleCheckout = async () => {
         if (cart.length === 0) return alert('Carrinho vazio.');
         try {
             for (const item of cart) {
                 for (let i = 0; i < item.quantidade; i++) {
-                    await comprarIngressoAPI(item.evento.id, user.id);
+                    await comprarIngressoAPI({ ingressoId: item.evento.ingressoId, quantidade: item.quantidade });
                 }
             }
             alert('Compra finalizada com sucesso! Seus ingressos estão garantidos.');
@@ -33,8 +33,8 @@ export default function Cart({ cart, setCart, user, setView }) {
                     {cart.map((item, idx) => (
                         <div key={idx} className="card" style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div>
-                                <h3 style={{margin: '0 0 0.5rem 0', color: 'var(--accent-color)'}}>{item.evento.descricao}</h3>
-                                <p style={{margin: 0}}>{item.quantidade}x R$ {item.evento.preco.toFixed(2)} = <strong>R$ {(item.evento.preco * item.quantidade).toFixed(2)}</strong></p>
+                                <h3 style={{margin: '0 0 0.5rem 0', color: 'var(--accent-color)'}}>{item.evento.titulo}</h3>
+                                <p style={{margin: 0}}>{item.quantidade}x R$ {item.evento.valorIngresso.toFixed(2)} = <strong>R$ {(item.evento.valorIngresso * item.quantidade).toFixed(2)}</strong></p>
                             </div>
                             <button className="btn outline" style={{borderColor: 'var(--danger-color)', color: 'var(--danger-color)'}} onClick={() => handleRemove(item.evento.id)}>Remover</button>
                         </div>
