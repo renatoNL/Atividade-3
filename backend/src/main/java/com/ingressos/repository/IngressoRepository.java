@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IngressoRepository extends JpaRepository<Ingresso, Long> {
+	java.util.Optional<Ingresso> findByEventoId(Long eventoId);
 }

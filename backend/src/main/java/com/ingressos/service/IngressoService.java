@@ -24,22 +24,37 @@ public class IngressoService {
 
     @Transactional
     public IngressoComprado comprarIngresso(Long ingressoId, Integer quantidade, Long compradorId) {
-        Ingresso ingresso = ingressoRepository.findById(ingressoId)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Ingresso não encontrado."));
+        validarQuantidade(quantidade);
+        Ingresso ingresso = buscarIngresso(ingressoId);
+        validarDisponibilidade(ingresso, quantidade);
+        ingresso.setQuantidade(ingresso.getQuantidade() - quantidade);
+        ingressoRepository.save(ingresso);
+        return ingressoCompradoRepository.save(criarCompra(ingressoId, quantidade, compradorId));
+    }
 
+    private void validarQuantidade(Integer quantidade) {
+        if (quantidade == null || quantidade < 1 || quantidade > 4) {
+            throw new RegraNegocioException("A quantidade deve estar entre 1 e 4 ingressos.");
+        }
+    }
+
+    private Ingresso buscarIngresso(Long ingressoId) {
+        return ingressoRepository.findById(ingressoId)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Ingresso não encontrado."));
+    }
+
+    private void validarDisponibilidade(Ingresso ingresso, Integer quantidade) {
         if (ingresso.getQuantidade() < quantidade) {
             throw new RegraNegocioException("Quantidade de ingressos insuficiente.");
         }
+    }
 
-        ingresso.setQuantidade(ingresso.getQuantidade() - quantidade);
-        ingressoRepository.save(ingresso);
-
+    private IngressoComprado criarCompra(Long ingressoId, Integer quantidade, Long compradorId) {
         IngressoComprado compra = new IngressoComprado();
         compra.setIngressoId(ingressoId);
         compra.setCompradorId(compradorId);
         compra.setQuantidadeComprada(quantidade);
-
-        return ingressoCompradoRepository.save(compra);
+        return compra;
     }
 
     public List<IngressoComprado> listarMeusIngressos(Long compradorId) {
