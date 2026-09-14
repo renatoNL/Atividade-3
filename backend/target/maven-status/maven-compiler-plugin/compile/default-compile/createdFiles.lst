@@ -7,6 +7,7 @@ RequestLoggingFilter.class
 com\ingressos\controller\AuthController.class
 com\ingressos\repository\UsuarioRepository.class
 com\ingressos\config\RateLimitInterceptor.class
+com\ingressos\security\SecurityConfig.class
 com\ingressos\exception\RegraNegocioException.class
 com\ingressos\IngressosApplication.class
 com\ingressos\service\IngressoService.class
@@ -18,14 +19,13 @@ com\ingressos\dto\CompraIngressoDTO.class
 com\ingressos\config\WebConfig.class
 com\ingressos\exception\RecursoNaoEncontradoException.class
 com\ingressos\repository\IngressoCompradoRepository.class
-com\ingressos\config\SecurityConfig.class
 com\ingressos\exception\LimiteRequisicaoExcedidoException.class
 com\ingressos\service\EventoService.class
 com\ingressos\config\OpenApiConfig.class
 com\ingressos\controller\CompradorController.class
-com\ingressos\config\JwtAuthenticationFilter.class
 com\ingressos\repository\EventoRepository.class
 com\ingressos\util\DataLoader.class
 com\ingressos\service\UsuarioService.class
 com\ingressos\dto\EventoRequestDTO.class
+com\ingressos\security\JwtAuthenticationFilter.class
 com\ingressos\dto\UsuarioRequestDTO.class

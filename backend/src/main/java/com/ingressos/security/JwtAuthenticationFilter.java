@@ -1,4 +1,4 @@
-package com.ingressos.config;
+package com.ingressos.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
