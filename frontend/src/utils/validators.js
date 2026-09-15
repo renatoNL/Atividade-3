@@ -50,9 +50,9 @@ export const validaIdade = (dataNascimento) => {
     return idade >= 18;
 };
 
-// Segurança baseada nos requisitos do repositório anexado[cite: 3, 4]
+
 export const validaSenha = (senha) => {
-    // Mínimo 6 caracteres, no mínimo uma letra maiúscula e uma letra minúscula (garante as letras)
+    
     const regex = /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
     return regex.test(senha);
 };

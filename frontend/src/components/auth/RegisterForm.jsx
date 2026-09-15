@@ -36,7 +36,7 @@ export default function RegisterForm({ role, setView }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        // Validar tudo antes do envio
+        
         handleBlur('documento');
         handleBlur('email');
         handleBlur('senha');
